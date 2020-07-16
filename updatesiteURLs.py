@@ -23,7 +23,7 @@ installTargets = 'R8040GWDEVTEST'  # policy-install-targets-here
 
 def retrieveLatest():
     filedata = urllib2.urlopen(
-        'https://raw.githubusercontent.com/aaronrose18/susdom/master/suspiciousdomains.txt', context=ctx)
+        'https://raw.githubusercontent.com/aaronroseio/autoupdateurls/master/suspiciousdomains.txt', context=ctx)
     datatowrite = filedata.read()
 
     with open('suspiciousdomains.txt', 'wb') as f:
