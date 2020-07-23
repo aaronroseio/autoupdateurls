@@ -1,3 +1,5 @@
+#Created by: Aaron Rose, Security Architect @ Check Point Software Technologies
+#This script is provided "as is" and without warranty of any kind, you are solely responsible for any compromise or loss of data that may result from using this Script.
 # import modules
 from os import path
 import urllib2
