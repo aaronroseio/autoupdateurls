@@ -6,11 +6,12 @@ import os
 import getpass
 import json
 import ssl
-# SSL context to provide a CA Bundle for server verification.  Download the CA Bundle here before running https://curl.haxx.se/ca/cacert.pem & make sure the path below is correct
+# SSL context to provide a CA Bundle for server verification.  Download the CA Bundle here before running https://curl.haxx.se/ca/cacert.pem & make sure the path below is correct or SSL Validation will fail
 ctx = ssl.create_default_context(cafile="/home/admin/cacert.pem")
-# Define variables -- change object name & category as needed
+# Define variables -- change object name, category, url to domain list, etc. as needed
+suspiciousDomainsURL = 'https://raw.githubusercontent.com/aaronroseio/autoupdateurls/master/suspiciousdomains.txt'
 newfile = 'suspiciousdomains.txt'
-objectName = 'SUSP-DOM111'
+objectName = 'CUSTOM-SUSPICIOUS-DOMAINS'
 objectCategory = 'Custom_Application_Site'
 apiKey = 'API-KEY-HERE'  # only needed for unattended use
 domain = 'DOMAIN-NAME-HERE'  # MDM Domain
@@ -21,7 +22,7 @@ installTargets = 'R8040GWDEVTEST'  # policy-install-targets-here
 
 def retrieveLatest():
     filedata = urllib2.urlopen(
-        'https://github.com/aaronroseio/autoupdateurls/blob/master/suspiciousdomains.txt', context=ctx)
+        suspiciousDomainsURL, context=ctx)
     datatowrite = filedata.read()
 
     with open('suspiciousdomains.txt', 'wb') as f:
@@ -80,7 +81,6 @@ def addApplicationSite(newfile, sid, objectName, objectCategory):
             line = fp.readline()
             cnt += 1
         addApplicationCommand += " --session-id " + sid
-        print(addApplicationCommand)
         os.system(addApplicationCommand)
 
 # this function is for the first time run using the set application-site command with url.list.add argument, although it adds all urls in the txt file, only the changes are processed by the mgmt api server
@@ -99,7 +99,6 @@ def editApplicationSite(newfile, sid, objectName):
             line = fp.readline()
             cnt += 1
         editApplicationCommand += " --session-id " + sid
-        print(editApplicationCommand)
         os.system(editApplicationCommand)
 
 
@@ -111,10 +110,10 @@ logincommand = "mgmt_cli login user " + username + \
 
 # uncomment the variable below and comment out the lines above to use the apikey
 # logincommand = 'mgmt_cli login api-key "{}" domain "{}" --format json'.format(apiKey,domain)
-print (logincommand)
+
 
 sid = apiLogin(logincommand)
-print path.exists("suspiciousdomains.txt")
+
 # check to see if file exists --- uncomment #apiInstall lines if you want the script to install policy each time or create a separate script to run at the desired interval with the functions login, install & logout
 if path.exists('suspiciousdomains.txt'):
     retrieveLatest()
