@@ -7,7 +7,7 @@ import getpass
 import json
 import ssl
 # SSL context to provide a CA Bundle for server verification.  Download the CA Bundle here before running https://curl.haxx.se/ca/cacert.pem & make sure the path below is correct
-ctx = ssl.create_default_context(cafile="/home/admin/ca-bundle.pem")
+ctx = ssl.create_default_context(cafile="/home/admin/cacert.pem")
 # Define variables -- change object name & category as needed
 newfile = 'suspiciousdomains.txt'
 objectName = 'SUSP-DOM111'
