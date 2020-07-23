@@ -6,10 +6,8 @@ import os
 import getpass
 import json
 import ssl
-# SSL context to override certificate error - looking for alternatives for this issue
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
+# SSL context to provide a CA Bundle for server verification.  Download the CA Bundle here before running https://curl.haxx.se/ca/cacert.pem & make sure the path below is correct
+ctx = ssl.create_default_context(cafile="/home/admin/ca-bundle.pem")
 # Define variables -- change object name & category as needed
 newfile = 'suspiciousdomains.txt'
 objectName = 'SUSP-DOM111'
@@ -23,7 +21,7 @@ installTargets = 'R8040GWDEVTEST'  # policy-install-targets-here
 
 def retrieveLatest():
     filedata = urllib2.urlopen(
-        'https://raw.githubusercontent.com/aaronroseio/autoupdateurls/master/suspiciousdomains.txt', context=ctx)
+        'https://raw.githubusercontent.com/aaronrose18/susdom/master/suspiciousdomains.txt', context=ctx)
     datatowrite = filedata.read()
 
     with open('suspiciousdomains.txt', 'wb') as f:
@@ -117,7 +115,7 @@ print (logincommand)
 
 sid = apiLogin(logincommand)
 print path.exists("suspiciousdomains.txt")
-# check to see if file exists
+# check to see if file exists --- uncomment #apiInstall lines if you want the script to install policy each time or create a separate script to run at the desired interval with the functions login, install & logout
 if path.exists('suspiciousdomains.txt'):
     retrieveLatest()
     editApplicationSite(newfile, sid, objectName)
